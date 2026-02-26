@@ -1,1 +1,44 @@
-{"mcpServers":{}}
+{
+    "mcpServers": {
+        "desktop-commander": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "@wonderwhy-er/desktop-commander-mcp"
+            ],
+            "env": {
+                "ALLOWED_DIRECTORIES": [
+                    "C:/Users/renre/Downloads/Mustaqbal-Webaite"
+                ]
+            }
+        },
+        "github": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "@modelcontextprotocol/server-github"
+            ],
+            "env": {
+                "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}"
+            }
+        },
+        "tavily-search": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "@modelcontextprotocol/server-tavily"
+            ],
+            "env": {
+                "TAVILY_API_KEY": "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"
+            }
+        },
+        "filesystem": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "@modelcontextprotocol/server-filesystem",
+                "C:/Users/renre/Downloads/Mustaqbal-Webaite"
+            ]
+        }
+    }
+}

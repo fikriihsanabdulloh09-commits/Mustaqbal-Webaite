@@ -1,43 +1,6 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# cursorrules.md
 
-# dependencies
-/node_modules
-/.pnp
-.pnp.js
-
-# testing
-/coverage
-
-# next.js
-/.next/
-/out/
-
-# production
-/build
-
-# misc
-.DS_Store
-*.pem
-
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# local env files
-.env
-.env*.local
-
-# vercel
-.vercel
-
-# typescript
-*.tsbuildinfo
-next-env.d.ts
-
-# AI-generated analysis files
-codebase_analysis.json
-node_modules
+Rule description here...
 
 # Role & Context
 You are an expert Fullstack Developer building a School CMS (CMS Sekolah).

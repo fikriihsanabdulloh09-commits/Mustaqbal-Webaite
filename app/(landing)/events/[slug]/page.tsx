@@ -1,14 +1,25 @@
-'use client';
-
-import { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
-import { createClient } from '@/lib/supabase';
+import { supabase } from '@/lib/supabase';
+import { notFound } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Calendar, MapPin, Users, Clock, ExternalLink, ArrowLeft, Loader2 } from 'lucide-react';
+import { Calendar, MapPin, Users, ExternalLink, ArrowLeft } from 'lucide-react';
 import { AnimatedSection } from '@/components/AnimatedSection';
 import Link from 'next/link';
+
+export const revalidate = 60;
+
+// generateStaticParams is required for dynamic routes when using output: 'export'
+export async function generateStaticParams() {
+  const { data: events } = await supabase
+    .from('events')
+    .select('slug')
+    .eq('is_published', true);
+
+  return (
+    events?.map((ev: { slug: string }) => ({ slug: ev.slug })) || []
+  );
+}
 
 interface Event {
   id: string;
@@ -25,37 +36,22 @@ interface Event {
   is_published: boolean;
 }
 
-export default function EventDetailPage() {
-  const params = useParams();
-  const router = useRouter();
-  const slug = params?.slug as string;
-  const [event, setEvent] = useState<Event | null>(null);
-  const [loading, setLoading] = useState(true);
+export default async function EventDetailPage({
+  params,
+}: {
+  params: { slug: string };
+}) {
+  const { data: event } = await supabase
+    .from('events')
+    .select('*')
+    .eq('slug', params.slug)
+    .eq('is_published', true)
+    .maybeSingle();
 
-  useEffect(() => {
-    if (slug) {
-      fetchEvent();
-    }
-  }, [slug]);
-
-  async function fetchEvent() {
-    try {
-      const supabase = createClient();
-      const { data, error } = await supabase
-        .from('events')
-        .select('*')
-        .eq('slug', slug)
-        .eq('is_published', true)
-        .maybeSingle();
-
-      if (error) throw error;
-      setEvent(data);
-    } catch (error) {
-      console.error('Error fetching event:', error);
-    } finally {
-      setLoading(false);
-    }
+  if (!event) {
+    notFound();
   }
+
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('id-ID', {
@@ -65,32 +61,6 @@ export default function EventDetailPage() {
       day: 'numeric',
     });
   };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-12 h-12 animate-spin text-teal-600" />
-      </div>
-    );
-  }
-
-  if (!event) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <Calendar className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Event Tidak Ditemukan</h2>
-          <p className="text-gray-600 mb-6">Event yang Anda cari tidak tersedia</p>
-          <Link href="/events">
-            <Button>
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Kembali ke Daftar Event
-            </Button>
-          </Link>
-        </div>
-      </div>
-    );
-  }
 
   const now = new Date();
   const startDate = new Date(event.event_date_start);
