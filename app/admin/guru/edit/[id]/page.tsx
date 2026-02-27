@@ -1,5 +1,7 @@
 'use client';
 
+export const dynamicParams = true;
+
 import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase';

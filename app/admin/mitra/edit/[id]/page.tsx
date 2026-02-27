@@ -2,6 +2,8 @@ import { notFound } from 'next/navigation';
 import { getPartnerById } from '@/lib/actions/partners';
 import { PartnerForm } from '@/components/admin/PartnerForm';
 
+export const dynamicParams = true;
+
 interface EditMitraPageProps {
     params: Promise<{
         id: string;
