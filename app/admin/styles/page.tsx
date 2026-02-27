@@ -7,8 +7,16 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Save, Palette } from 'lucide-react';
 import { toast } from 'sonner';
+import { GOOGLE_FONTS } from '@/lib/constants/fonts';
 
 interface GlobalStyle {
   id: string;
@@ -171,19 +179,63 @@ export default function GlobalStylesPage() {
                   </div>
                 )}
 
-                {category !== 'colors' && (
-                  <div className="grid gap-6 md:grid-cols-2">
+                {category === 'typography' && (
+                  <div className="space-y-6">
                     {categoryStyles.map(style => (
-                      <div key={style.id} className="space-y-2">
+                      <div key={style.id} className="space-y-3">
                         <Label htmlFor={style.key}>
-                          {style.key.replace('--', '').replace(/-/g, ' ')}
+                          {style.key.replace('--font-', '').replace(/-/g, ' ')}
                         </Label>
-                        <Input
-                          id={style.key}
-                          value={getValue(style)}
-                          onChange={(e) => updateStyle(style.key, e.target.value)}
-                        />
+                        <div className="flex gap-2 items-center">
+                          <Select
+                            value={getValue(style)}
+                            onValueChange={(value) => updateStyle(style.key, value)}
+                          >
+                            <SelectTrigger className="w-full">
+                              <SelectValue placeholder="Pilih font" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="__custom__">+ Custom Font</SelectItem>
+                              {GOOGLE_FONTS.map((font) => (
+                                <SelectItem key={font.value} value={font.value}>
+                                  <span style={{ fontFamily: font.value }}>
+                                    {font.name}
+                                  </span>
+                                  <span className="text-muted-foreground ml-2 text-xs">
+                                    ({font.category})
+                                  </span>
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+
+                          {/* Show custom input when __custom__ is selected or value is not in Google Fonts */}
+                          {getValue(style) === '__custom__' && (
+                            <Input
+                              placeholder="Masukkan nama font (cth: Roboto, Open Sans)"
+                              value=""
+                              onChange={(e) => updateStyle(style.key, e.target.value)}
+                            />
+                          )}
+
+                          {/* Show custom input if value exists but not in Google Fonts */}
+                          {getValue(style) !== '__custom__' && !GOOGLE_FONTS.some(f => f.value.toLowerCase() === getValue(style).toLowerCase()) && getValue(style) && (
+                            <Input
+                              placeholder="Nama custom font"
+                              value={getValue(style)}
+                              onChange={(e) => updateStyle(style.key, e.target.value)}
+                            />
+                          )}
+                        </div>
                         <p className="text-xs text-gray-500">{style.description}</p>
+                        {getValue(style) && (
+                          <div
+                            className="text-lg p-3 bg-gray-50 rounded border"
+                            style={{ fontFamily: getValue(style) }}
+                          >
+                            Contoh text - Aa Bb Cc 123
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>

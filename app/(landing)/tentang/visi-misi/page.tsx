@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Target, Eye, Heart, Wrench, Cpu, CheckCircle, BookOpen, Handshake, ArrowRight, Sparkles } from 'lucide-react';
 import Link from 'next/link';
+import SchoolProfileSection from '@/components/SchoolProfileSection';
 
 export default function VisiMisiPage() {
   const [hoveredMission, setHoveredMission] = useState<number | null>(null);
@@ -138,6 +139,8 @@ export default function VisiMisiPage() {
           </motion.p>
         </div>
       </motion.div>
+
+      <SchoolProfileSection />
 
       <section className="py-20 bg-white">
         <div className="container mx-auto px-6">

@@ -28,6 +28,7 @@ import {
   ChevronRight,
   Video,
   Briefcase,
+  Handshake,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { signOut } from '@/lib/auth/auth-helpers';
@@ -122,6 +123,11 @@ const menuItems: MenuItem[] = [
         href: '/admin/portfolio',
         icon: Briefcase,
       },
+      {
+        title: 'Mitra',
+        href: '/admin/mitra',
+        icon: Handshake,
+      },
     ],
   },
   {
@@ -163,6 +169,11 @@ const menuItems: MenuItem[] = [
         title: 'Halaman',
         href: '/admin/halaman',
         icon: FileText,
+      },
+      {
+        title: 'Profil Sekolah',
+        href: '/admin/profil-sekolah',
+        icon: Sparkles,
       },
       {
         title: 'Menu Navigasi',

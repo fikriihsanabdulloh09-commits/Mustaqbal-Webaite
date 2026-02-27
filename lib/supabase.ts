@@ -90,3 +90,50 @@ export type EBrochureDownload = {
   email?: string;
   ip_address?: string;
 };
+
+export type Partner = {
+  id: string;
+  name: string;
+  logo_url: string;
+  link_url: string | null;
+  sort_order: number;
+  is_active: boolean;
+  category?: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type PartnerFormData = {
+  name: string;
+  logo_url: string;
+  link_url: string;
+  sort_order: number;
+  is_active: boolean;
+  category?: string;
+};
+
+export type SchoolProfile = {
+  id: string;
+  profil_text: string;
+  profile_highlight_quote?: string | null;
+  tag_line: string;
+  quote_text?: string | null;
+  tag_line_description: string;
+  youtube_video_id: string;
+  youtube_video_url?: string | null;
+  video_file_url?: string | null;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
+export type SchoolProfileFormData = {
+  profil_text: string;
+  profile_highlight_quote?: string;
+  tag_line: string;
+  quote_text?: string;
+  tag_line_description: string;
+  youtube_video_id: string;
+  youtube_video_url?: string;
+  video_file_url?: string;
+};
