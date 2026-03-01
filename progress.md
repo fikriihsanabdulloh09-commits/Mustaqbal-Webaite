@@ -4,6 +4,18 @@
 
 | Date | Task | Files Created/Modified | Status |
 |------|------|----------------------|--------|
+| 2026-02-28 | Fix TypeScript error in supabase.ts - type string | lib/supabase.ts | Completed |
+| 2026-02-28 | Remove unused server action functions from page-settings.ts | lib/actions/page-settings.ts | Completed |
+| 2026-02-28 | Fix revalidatePath in page-settings server actions | lib/actions/page-settings.ts | Completed |
+| 2026-02-28 | Add revalidatePath to beranda API route | app/api/page-settings/beranda/route.ts | Completed |
+| 2026-02-28 | Remove duplicate BerandaSettings type | lib/supabase.ts | Completed |
+| 2026-02-28 | Remove empty rules&workflow directories | rules&workflow/ | Completed |
+| 2026-02-28 | Create page_settings table migration | supabase/migrations/20260228080000_add_page_settings_beranda.sql | Completed |
+| 2026-02-28 | Create page-settings server actions | lib/actions/page-settings.ts | Completed |
+| 2026-02-28 | Add PageSettings and BerandaSettings types | lib/supabase.ts | Completed |
+| 2026-02-28 | Create Beranda admin page with 7 tabs | app/admin/pages/beranda/page.tsx | Completed |
+| 2026-02-28 | Create API route for beranda settings | app/api/page-settings/beranda/route.ts | Completed |
+| 2026-02-28 | Add Beranda menu to admin sidebar | components/admin/AdminSidebar.tsx | Completed |
 | 2026-02-26 | Create SQL migration for partners table | supabase/migrations/20260226010000_add_partners_table.sql | Completed |
 | 2026-02-26 | Add Partner types to supabase.ts | lib/supabase.ts | Completed |
 | 2026-02-26 | Create Server Actions for partners | lib/actions/partners.ts | Completed |
@@ -34,11 +46,25 @@
 - ✅ Support for custom font input
 - ✅ Live preview of selected font
 
+### CMS Page Builder - Beranda:
+- ✅ Database schema (page_settings table with JSONB)
+- ✅ Server Actions for CRUD operations
+- ✅ API Route for beranda settings
+- ✅ Admin page with 7 Tabs UI
+- ✅ Tab 1: Hero Section with E-Brosur settings
+- ✅ Tab 2: Keunggulan & Fasilitas (dynamic items)
+- ✅ Tab 3: Program Keahlian (title/subtitle)
+- ✅ Tab 4: Kerjasama Industri (statistics)
+- ✅ Tab 5: Testimoni Alumni (title/subtitle)
+- ✅ Tab 6: Berita Terkini (title/subtitle)
+- ✅ Tab 7: WhatsApp Widget Settings
+- ✅ Added "Beranda" menu to admin sidebar
+
 ## Next Steps
 
 1. Run the SQL migration on Supabase dashboard
-2. Add menu item for "Mitra" in admin sidebar
-3. Test the complete flow
+2. Test the beranda admin page functionality
+3. Connect frontend components to use settings from page_settings table
 
 ## Additional Tasks Completed
 

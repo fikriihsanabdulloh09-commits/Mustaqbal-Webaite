@@ -1,13 +1,24 @@
 import { createClient as createSupabaseClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-export const supabase = createSupabaseClient(supabaseUrl, supabaseAnonKey);
+// Validate environment variables at runtime
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error(
+    'Missing required Supabase environment variables. Please check your .env.local file.'
+  );
+}
+
+// Type assertion after validation - TypeScript doesn't know variables are defined after throw
+const supabaseUrlString = supabaseUrl as string;
+const supabaseAnonKeyString = supabaseAnonKey as string;
+
+export const supabase = createSupabaseClient(supabaseUrlString, supabaseAnonKeyString);
 
 // Export createClient function for admin pages
 export function createClient() {
-  return createSupabaseClient(supabaseUrl, supabaseAnonKey);
+  return createSupabaseClient(supabaseUrlString, supabaseAnonKeyString);
 }
 
 export type Program = {
@@ -136,4 +147,63 @@ export type SchoolProfileFormData = {
   youtube_video_id: string;
   youtube_video_url?: string;
   video_file_url?: string;
+};
+
+export type PageSettings = {
+  id: string;
+  page_name: string;
+  content: Record<string, unknown>;
+  created_at: string;
+  updated_at: string;
+};
+
+export type BerandaSettings = {
+  hero: {
+    welcome_text: string;
+    title: string;
+    subtitle: string;
+    cta_primary_text: string;
+    cta_secondary_text: string;
+    ebrosur: {
+      card_title: string;
+      card_description: string;
+      button_text: string;
+    };
+  };
+  features: {
+    section_title: string;
+    section_subtitle: string;
+    items: Array<{
+      icon: string;
+      title: string;
+      description: string;
+    }>;
+  };
+  programs: {
+    section_title: string;
+    section_subtitle: string;
+  };
+  partners: {
+    section_title: string;
+    section_subtitle: string;
+    statistics: Array<{
+      value: string;
+      label: string;
+    }>;
+  };
+  testimonials: {
+    section_title: string;
+    section_subtitle: string;
+  };
+  news: {
+    section_title: string;
+    section_subtitle: string;
+  };
+  whatsapp_widget: {
+    enabled: boolean;
+    title: string;
+    description: string;
+    default_message: string;
+    phone_number: string;
+  };
 };

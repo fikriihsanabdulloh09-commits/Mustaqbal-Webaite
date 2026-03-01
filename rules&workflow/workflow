@@ -1,0 +1,11 @@
+Setiap kali saya memberikan task baru (misalnya membuat UI CMS untuk halaman Beranda), Anda harus merespons dengan urutan langkah berikut, SATU PER SATU:
+
+Langkah 1 (Analisis & Rencana): Jangan langsung coding. Buatkan poin-poin singkat tentang struktur tabel database (jika butuh) dan struktur folder/komponen yang akan Anda buat.
+
+Langkah 2 (Tunggu Persetujuan): Tanyakan pada saya: "Apakah rencana ini sudah sesuai?" (Berhenti di sini dan tunggu balasan saya).
+
+Langkah 3 (Eksekusi Bertahap): Setelah saya bilang "Oke", berikan kode secara bertahap. Mulai dari Skema Database -> Komponen UI Induk -> Komponen Anak -> Logic/Server Action.
+
+Langkah 4 (Review): Jelaskan singkat cara kerja kode yang baru saja Anda berikan.
+
+Jika Anda mengerti aturan ini, jawab dengan: "Siap, saya mengerti Rules dan Workflow-nya. Silakan berikan task pertama Anda."

@@ -37,7 +37,7 @@ const colorMap: Record<string, { from: string; to: string; bg: string }> = {
   purple: { from: 'from-purple-500', to: 'to-indigo-500', bg: 'bg-purple-500' },
 };
 
-export default function ProgramsSection() {
+export default function ProgramsSection({ settings }: { settings?: { section_title?: string; section_subtitle?: string } }) {
   const [programs, setPrograms] = useState<Program[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -85,7 +85,7 @@ export default function ProgramsSection() {
           >
             <h2 className="text-teal-600 font-bold tracking-wider uppercase text-sm mb-3">Program Keahlian</h2>
             <h3 className="font-heading text-3xl md:text-4xl font-bold text-slate-900">
-              Siapkan Diri Menjadi Ahli
+              {settings?.section_title || 'Siapkan Diri Menjadi Ahli'}
             </h3>
           </motion.div>
           <motion.div

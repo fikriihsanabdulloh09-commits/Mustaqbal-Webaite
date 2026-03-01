@@ -15,7 +15,7 @@ const categoryLabels: Record<string, string> = {
   artikel: 'Artikel',
 };
 
-export default function NewsSection() {
+export default function NewsSection({ settings }: { settings?: { section_title?: string; section_subtitle?: string } }) {
   const [news, setNews] = useState<NewsArticle[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -54,7 +54,7 @@ export default function NewsSection() {
           className="text-center mb-16"
         >
           <h2 className="text-teal-600 font-bold tracking-wider uppercase text-sm mb-3">Berita Terkini</h2>
-          <h3 className="font-heading text-3xl md:text-4xl font-bold text-slate-900">Seputar SMK Mustaqbal</h3>
+          <h3 className="font-heading text-3xl md:text-4xl font-bold text-slate-900">{settings?.section_title || 'Seputar SMK Mustaqbal'}</h3>
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">

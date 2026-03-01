@@ -1,13 +1,27 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Target, Eye, Heart, Wrench, Cpu, CheckCircle, BookOpen, Handshake, ArrowRight, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import SchoolProfileSection from '@/components/SchoolProfileSection';
+import { getPageSettings } from '@/lib/actions/page-settings';
 
 export default function VisiMisiPage() {
   const [hoveredMission, setHoveredMission] = useState<number | null>(null);
+  const [visiText, setVisiText] = useState('"Menjadi SMK yang memuliakan fitrah, unggul dalam vokasi, dan adaptif teknologi—melahirkan lulusan berakhlaq, mandiri, dan berdampak."');
+  const [profilData, setProfilData] = useState<any>(null);
+
+  useEffect(() => {
+    async function load() {
+      const data = await getPageSettings<{ profil: any }>('tentang-kami');
+      if (data?.profil) {
+        setProfilData(data.profil);
+        if (data.profil.visi) setVisiText(data.profil.visi);
+      }
+    }
+    load();
+  }, []);
 
   const missions = [
     {
@@ -180,7 +194,7 @@ export default function VisiMisiPage() {
                   <Eye className="w-8 h-8 text-white" />
                 </motion.div>
                 <p className="text-2xl md:text-3xl font-bold text-slate-900 leading-relaxed">
-                  "Menjadi SMK yang memuliakan fitrah, unggul dalam vokasi, dan adaptif teknologi—melahirkan lulusan berakhlaq, mandiri, dan berdampak."
+                  {visiText}
                 </p>
               </div>
 
@@ -246,9 +260,8 @@ export default function VisiMisiPage() {
                 whileHover={{ y: -8, scale: 1.02 }}
                 onHoverStart={() => setHoveredMission(index)}
                 onHoverEnd={() => setHoveredMission(null)}
-                className={`bg-white rounded-3xl shadow-lg hover:shadow-2xl p-8 border-2 transition-all duration-300 cursor-pointer ${
-                  hoveredMission === index ? `border-${mission.color}-400` : 'border-slate-100'
-                }`}
+                className={`bg-white rounded-3xl shadow-lg hover:shadow-2xl p-8 border-2 transition-all duration-300 cursor-pointer ${hoveredMission === index ? `border-${mission.color}-400` : 'border-slate-100'
+                  }`}
               >
                 <div className="flex items-start gap-4 mb-6">
                   <motion.div

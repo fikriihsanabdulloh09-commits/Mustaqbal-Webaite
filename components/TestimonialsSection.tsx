@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { Quote } from 'lucide-react';
 import { supabase, type Testimonial } from '@/lib/supabase';
 
-export default function TestimonialsSection() {
+export default function TestimonialsSection({ settings }: { settings?: { section_title?: string; section_subtitle?: string } }) {
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -49,7 +49,7 @@ export default function TestimonialsSection() {
           className="text-center mb-16"
         >
           <h2 className="text-teal-300 font-bold tracking-wider uppercase text-sm mb-3">Kisah Sukses</h2>
-          <h3 className="font-heading text-3xl md:text-4xl font-bold text-white">Apa Kata Alumni Kami?</h3>
+          <h3 className="font-heading text-3xl md:text-4xl font-bold text-white">{settings?.section_title || 'Apa Kata Alumni Kami?'}</h3>
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">

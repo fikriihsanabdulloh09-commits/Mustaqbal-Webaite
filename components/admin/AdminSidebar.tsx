@@ -10,194 +10,173 @@ import {
   Users,
   Images,
   FileText,
-  Menu as MenuIcon,
   Settings,
   LogOut,
   UserCheck,
-  Award,
-  Calendar,
-  Bell,
-  Mail,
-  FolderOpen,
-  Palette,
-  Wand2,
-  Brush,
-  Sparkles,
-  Image as ImageIcon,
   ChevronDown,
   ChevronRight,
-  Video,
   Briefcase,
+  Home,
+  Info,
+  Star,
   Handshake,
+  MessageSquare,
+  MessageCircle,
+  Phone,
+  ClipboardList,
+  BookOpen,
+  Rocket,
+  Inbox,
+  ImageIcon,
+  School,
+  Palette,
+  Globe,
+  FootprintsIcon,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { signOut } from '@/lib/auth/auth-helpers';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
+// ============================================================
+// TIPE DATA SIDEBAR
+// ============================================================
 interface MenuItem {
   title: string;
   href?: string;
-  icon: any;
+  icon?: any;
   children?: MenuItem[];
 }
 
-const menuItems: MenuItem[] = [
+interface SidebarGroup {
+  /** Label grup (huruf kapital) — null berarti tanpa label (misal Dashboard) */
+  groupLabel: string | null;
+  items: MenuItem[];
+}
+
+// ============================================================
+// STRUKTUR FINAL SIDEBAR CMS — "Page-Centric & Master Data"
+// ============================================================
+const sidebarConfig: SidebarGroup[] = [
+  // ── Dashboard (Menu Tunggal, tanpa group label) ──
   {
-    title: 'Dashboard',
-    href: '/admin/dashboard',
-    icon: LayoutDashboard,
-  },
-  {
-    title: 'Design & Layout',
-    icon: Palette,
-    children: [
+    groupLabel: null,
+    items: [
       {
-        title: 'Page Builder',
-        href: '/admin/page-builder',
-        icon: Wand2,
-      },
-      {
-        title: 'Hero Settings',
-        href: '/admin/hero-settings',
-        icon: ImageIcon,
-      },
-      {
-        title: 'Themes',
-        href: '/admin/themes',
-        icon: Palette,
-      },
-      {
-        title: 'Global Styles',
-        href: '/admin/styles',
-        icon: Brush,
-      },
-      {
-        title: 'Animations',
-        href: '/admin/animations',
-        icon: Sparkles,
-      },
-      {
-        title: 'Brand & Logo',
-        href: '/admin/branding',
-        icon: ImageIcon,
+        title: 'Dashboard',
+        href: '/admin/dashboard',
+        icon: LayoutDashboard,
       },
     ],
   },
+
+  // ── MANAJEMEN HALAMAN ──
+  // Fokus pada Update/Edit Teks & Layout halaman website
   {
-    title: 'Konten',
-    icon: FileText,
-    children: [
+    groupLabel: 'MANAJEMEN HALAMAN',
+    items: [
+      // 🏠 Beranda — sub-menu untuk setiap section di landing page
       {
-        title: 'Berita',
-        href: '/admin/berita',
-        icon: Newspaper,
+        title: 'Beranda',
+        icon: Home,
+        children: [
+          { title: 'Hero & Download E-Brosur', href: '/admin/pages/beranda?tab=hero', icon: Star },
+          { title: 'Keunggulan & Fasilitas', href: '/admin/pages/beranda?tab=features', icon: Star },
+          { title: 'Preview Program Keahlian', href: '/admin/pages/beranda?tab=programs', icon: GraduationCap },
+          { title: 'Kerjasama Industri & Statistik', href: '/admin/pages/beranda?tab=partners', icon: Handshake },
+          { title: 'Kisah Sukses (Testimoni)', href: '/admin/pages/beranda?tab=testimonials', icon: MessageSquare },
+          { title: 'Konsultasi WA', href: '/admin/pages/beranda?tab=whatsapp', icon: MessageCircle },
+        ],
       },
+      // ℹ️ Tentang Kami
+      {
+        title: 'Tentang Kami',
+        icon: Info,
+        children: [
+          { title: 'Profil, Video & Visi Misi', href: '/admin/pages/tentang-kami?tab=profil', icon: Info },
+          { title: 'Sambutan Kepala Sekolah', href: '/admin/pages/tentang-kami?tab=sambutan', icon: Users },
+          { title: 'Layout Profil Guru', href: '/admin/pages/tentang-kami?tab=guru-layout', icon: Users },
+        ],
+      },
+      // 🎓 Program Keahlian
       {
         title: 'Program Keahlian',
-        href: '/admin/program',
         icon: GraduationCap,
+        children: [
+          { title: 'Layout Header', href: '/admin/pages/program-keahlian?tab=header', icon: FileText },
+          { title: 'Fasilitas & Prospek Karir', href: '/admin/pages/program-keahlian?tab=fasilitas', icon: Briefcase },
+        ],
       },
-      {
-        title: 'Guru & Staff',
-        href: '/admin/guru',
-        icon: Users,
-      },
-      {
-        title: 'Prestasi',
-        href: '/admin/prestasi',
-        icon: Award,
-      },
-      {
-        title: 'Events',
-        href: '/admin/events',
-        icon: Calendar,
-      },
-      {
-        title: 'Pengumuman',
-        href: '/admin/pengumuman',
-        icon: Bell,
-      },
+      // 💼 Portfolio
       {
         title: 'Portfolio',
-        href: '/admin/portfolio',
         icon: Briefcase,
+        children: [
+          { title: 'Layout Halaman Portfolio', href: '/admin/pages/portfolio', icon: FileText },
+        ],
       },
+      // 📰 Berita & Artikel
       {
-        title: 'Mitra',
-        href: '/admin/mitra',
-        icon: Handshake,
+        title: 'Berita & Artikel',
+        icon: Newspaper,
+        children: [
+          { title: 'Layout Header & Filter Tab', href: '/admin/pages/berita', icon: FileText },
+        ],
+      },
+      // 📞 Hubungi Kami
+      {
+        title: 'Hubungi Kami',
+        icon: Phone,
+        children: [
+          { title: 'Informasi Kontak & Peta', href: '/admin/pages/hubungi-kami', icon: Phone },
+        ],
+      },
+      // 📝 Pendaftaran PPDB
+      {
+        title: 'Pendaftaran PPDB',
+        icon: ClipboardList,
+        children: [
+          { title: 'Layout Form Pendaftaran', href: '/admin/pages/ppdb', icon: FileText },
+        ],
       },
     ],
   },
+
+  // ── MASTER DATA ──
+  // Fokus pada CRUD Dinamis (Tambah/Edit/Hapus)
   {
-    title: 'Media & Galeri',
-    icon: Images,
-    children: [
-      {
-        title: 'Galeri Foto',
-        href: '/admin/galeri/foto',
-        icon: Images,
-      },
-      {
-        title: 'Galeri Video',
-        href: '/admin/galeri/video',
-        icon: Video,
-      },
-      {
-        title: 'Kurikulum',
-        href: '/admin/dokumen/kurikulum',
-        icon: FileText,
-      },
-      {
-        title: 'E-Brosur',
-        href: '/admin/dokumen/ebrosur',
-        icon: FileText,
-      },
+    groupLabel: 'MASTER DATA',
+    items: [
+      { title: 'Data Guru & Staff', href: '/admin/master/guru', icon: Users },
+      { title: 'Data Program Keahlian', href: '/admin/master/program', icon: BookOpen },
+      { title: 'Data Portfolio Siswa', href: '/admin/master/portfolio', icon: Rocket },
+      { title: 'Data Berita & Pengumuman', href: '/admin/master/berita', icon: Newspaper },
+      { title: 'Data Testimoni Alumni', href: '/admin/master/testimoni', icon: MessageSquare },
+      { title: 'Data Pendaftar PPDB', href: '/admin/master/ppdb', icon: Inbox },
+      { title: 'Media & Galeri', href: '/admin/master/media', icon: Images },
     ],
   },
+
+  // ── PENGATURAN GLOBAL ──
+  // Fokus pada Update Pengaturan Situs
   {
-    title: 'PPDB',
-    href: '/admin/ppdb',
-    icon: UserCheck,
-  },
-  {
-    title: 'Website',
-    icon: MenuIcon,
-    children: [
-      {
-        title: 'Halaman',
-        href: '/admin/halaman',
-        icon: FileText,
-      },
-      {
-        title: 'Profil Sekolah',
-        href: '/admin/profil-sekolah',
-        icon: Sparkles,
-      },
-      {
-        title: 'Menu Navigasi',
-        href: '/admin/menu',
-        icon: MenuIcon,
-      },
-      {
-        title: 'Newsletter',
-        href: '/admin/newsletter',
-        icon: Mail,
-      },
+    groupLabel: 'PENGATURAN GLOBAL',
+    items: [
+      { title: 'Informasi Umum Sekolah', href: '/admin/pengaturan/informasi-umum', icon: School },
+      { title: 'Branding & Logo', href: '/admin/pengaturan/branding', icon: Palette },
+      { title: 'Social Media', href: '/admin/pengaturan/social-media', icon: Globe },
+      { title: 'Footer Link & Hak Cipta', href: '/admin/pengaturan/footer', icon: FootprintsIcon },
     ],
-  },
-  {
-    title: 'Pengaturan',
-    href: '/admin/pengaturan',
-    icon: Settings,
   },
 ];
 
+// ============================================================
+// KOMPONEN SIDEBAR
+// ============================================================
 export function AdminSidebar({ className, user }: { className?: string; user?: any }) {
   const pathname = usePathname();
   const router = useRouter();
-  const [openGroups, setOpenGroups] = useState<string[]>(['Design & Layout', 'Konten']);
+  const [openGroups, setOpenGroups] = useState<string[]>(['Beranda', 'Tentang Kami']);
 
   const handleLogout = async () => {
     try {
@@ -217,21 +196,28 @@ export function AdminSidebar({ className, user }: { className?: string; user?: a
     );
   };
 
-  const renderMenuItem = (item: MenuItem) => {
+  /** Render satu menu item (bisa punya children / sub-menu) */
+  const renderMenuItem = (item: MenuItem, depth = 0) => {
     const Icon = item.icon;
     const hasChildren = item.children && item.children.length > 0;
     const isOpen = openGroups.includes(item.title);
-    const isActive = item.href && (pathname === item.href || pathname?.startsWith(item.href + '/'));
+
+    // Cek apakah link aktif (tanpa query-string match supaya path-based)
+    const hrefPath = item.href?.split('?')[0];
+    const isActive = hrefPath && (pathname === hrefPath || pathname?.startsWith(hrefPath + '/'));
 
     if (hasChildren) {
       return (
         <div key={item.title} className="space-y-1">
           <button
             onClick={() => toggleGroup(item.title)}
-            className="flex items-center justify-between w-full rounded-lg px-3 py-2 text-sm font-medium transition-all hover:bg-teal-50 hover:text-teal-900 text-gray-700"
+            className={cn(
+              'flex items-center justify-between w-full rounded-lg px-3 py-2 text-sm font-medium transition-all hover:bg-teal-50 hover:text-teal-900 text-gray-700',
+              depth > 0 && 'text-xs'
+            )}
           >
             <div className="flex items-center gap-3">
-              <Icon className="h-5 w-5" />
+              {Icon && <Icon className={cn('h-5 w-5', depth > 0 && 'h-4 w-4')} />}
               {item.title}
             </div>
             {isOpen ? (
@@ -241,27 +227,8 @@ export function AdminSidebar({ className, user }: { className?: string; user?: a
             )}
           </button>
           {isOpen && (
-            <div className="ml-6 space-y-1 border-l-2 border-gray-200 pl-2">
-              {item.children?.map(child => {
-                const ChildIcon = child.icon;
-                const isChildActive = child.href && (pathname === child.href || pathname?.startsWith(child.href + '/'));
-
-                return (
-                  <Link
-                    key={child.href}
-                    href={child.href!}
-                    className={cn(
-                      'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all hover:bg-teal-50 hover:text-teal-900',
-                      isChildActive
-                        ? 'bg-teal-100 text-teal-900'
-                        : 'text-gray-600'
-                    )}
-                  >
-                    <ChildIcon className="h-4 w-4" />
-                    {child.title}
-                  </Link>
-                );
-              })}
+            <div className="ml-4 space-y-0.5 border-l-2 border-teal-100 pl-2">
+              {item.children?.map(child => renderMenuItem(child, depth + 1))}
             </div>
           )}
         </div>
@@ -270,17 +237,18 @@ export function AdminSidebar({ className, user }: { className?: string; user?: a
 
     return (
       <Link
-        key={item.href}
+        key={item.href || item.title}
         href={item.href!}
         className={cn(
           'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all hover:bg-teal-50 hover:text-teal-900',
           isActive
             ? 'bg-teal-100 text-teal-900'
-            : 'text-gray-700'
+            : 'text-gray-600',
+          depth > 0 && 'text-xs py-1.5'
         )}
       >
-        <Icon className="h-5 w-5" />
-        {item.title}
+        {Icon && <Icon className={cn('h-4 w-4', depth === 0 && 'h-5 w-5')} />}
+        <span className="truncate">{item.title}</span>
       </Link>
     );
   };
@@ -289,6 +257,7 @@ export function AdminSidebar({ className, user }: { className?: string; user?: a
     <div className={cn('pb-12 min-h-screen flex flex-col', className)}>
       <div className="space-y-4 py-4">
         <div className="px-3 py-2">
+          {/* ── Header ── */}
           <div className="mb-6 px-4">
             <h2 className="text-2xl font-bold text-teal-600 flex items-center gap-2">
               <GraduationCap className="w-8 h-8" />
@@ -297,6 +266,7 @@ export function AdminSidebar({ className, user }: { className?: string; user?: a
             <p className="text-sm text-gray-500 mt-1">SMK Mustaqbal</p>
           </div>
 
+          {/* ── User Info ── */}
           {user && (
             <div className="mb-6 px-4 pb-4 border-b border-gray-200">
               <div className="flex items-center gap-3">
@@ -315,11 +285,30 @@ export function AdminSidebar({ className, user }: { className?: string; user?: a
             </div>
           )}
 
-          <div className="space-y-1 max-h-[calc(100vh-280px)] overflow-y-auto">
-            {menuItems.map(renderMenuItem)}
+          {/* ── Menu Items with Group Labels ── */}
+          <div className="space-y-1 max-h-[calc(100vh-280px)] overflow-y-auto pr-1">
+            {sidebarConfig.map((group, groupIdx) => (
+              <div key={group.groupLabel || `group-${groupIdx}`}>
+                {/* Group Label Separator */}
+                {group.groupLabel && (
+                  <div className="mt-5 mb-2 px-3">
+                    <p className="text-[10px] font-bold tracking-widest text-gray-400 uppercase">
+                      {group.groupLabel}
+                    </p>
+                    <div className="mt-1 border-b border-gray-100" />
+                  </div>
+                )}
+                {/* Group Items */}
+                <div className="space-y-0.5">
+                  {group.items.map(item => renderMenuItem(item))}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
+
+      {/* ── Logout Button ── */}
       <div className="px-3 py-2 mt-auto">
         <Button
           variant="outline"

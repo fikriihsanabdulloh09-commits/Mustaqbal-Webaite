@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { GraduationCap, Mail, Phone, Award, BookOpen } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
+import { getPageSettings } from '@/lib/actions/page-settings';
 
 interface Teacher {
   id: string;
@@ -23,6 +24,8 @@ interface Teacher {
 export default function ProfileGuruPage() {
   const [teachers, setTeachers] = useState<Teacher[]>([]);
   const [loading, setLoading] = useState(true);
+  const [sectionTitle, setSectionTitle] = useState('Profile Guru SMK Mustaqbal');
+  const [sectionSubtitle, setSectionSubtitle] = useState('Tim pengajar profesional dan bersertifikat yang siap membimbing siswa menuju kesuksesan');
 
   useEffect(() => {
     async function fetchTeachers() {
@@ -43,6 +46,16 @@ export default function ProfileGuruPage() {
     }
 
     fetchTeachers();
+
+    // Load guru layout settings from CMS
+    async function loadGuruLayout() {
+      const data = await getPageSettings<{ guruLayout: any }>('tentang-kami');
+      if (data?.guruLayout) {
+        if (data.guruLayout.section_title) setSectionTitle(data.guruLayout.section_title);
+        if (data.guruLayout.section_subtitle) setSectionSubtitle(data.guruLayout.section_subtitle);
+      }
+    }
+    loadGuruLayout();
   }, []);
 
   if (loading) {
@@ -70,10 +83,10 @@ export default function ProfileGuruPage() {
             <span className="text-sm font-bold text-teal-600">Tenaga Pendidik</span>
           </div>
           <h1 className="font-heading text-4xl md:text-5xl font-bold text-slate-900 mb-6">
-            Profile Guru SMK Mustaqbal
+            {sectionTitle}
           </h1>
           <p className="text-slate-600 text-lg max-w-3xl mx-auto">
-            Tim pengajar profesional dan bersertifikat yang siap membimbing siswa menuju kesuksesan
+            {sectionSubtitle}
           </p>
         </motion.div>
 

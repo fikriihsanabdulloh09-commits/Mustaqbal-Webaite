@@ -27,7 +27,13 @@ const features = [
   },
 ];
 
-export default function FeaturesSection() {
+interface FeatureSettings {
+  section_title?: string;
+  section_subtitle?: string;
+  items?: Array<{ icon: string; title: string; description: string }>;
+}
+
+export default function FeaturesSection({ settings }: { settings?: FeatureSettings }) {
   return (
     <section className="py-24 bg-white">
       <div className="container mx-auto px-4">
@@ -40,11 +46,10 @@ export default function FeaturesSection() {
         >
           <h2 className="text-teal-600 font-bold tracking-wider uppercase text-sm mb-3">Kenapa Memilih Kami?</h2>
           <h3 className="font-heading text-3xl md:text-4xl font-bold text-slate-900 mb-6">
-            Keunggulan Akademik & Fasilitas Terbaik
+            {settings?.section_title || 'Keunggulan Akademik & Fasilitas Terbaik'}
           </h3>
           <p className="text-slate-600 text-lg">
-            Kami tidak hanya mencetak lulusan yang pintar secara teori, tetapi juga terampil, berkarakter, dan
-            siap bersaing di era global.
+            {settings?.section_subtitle || 'Kami tidak hanya mencetak lulusan yang pintar secara teori, tetapi juga terampil, berkarakter, dan siap bersaing di era global.'}
           </p>
         </motion.div>
 
