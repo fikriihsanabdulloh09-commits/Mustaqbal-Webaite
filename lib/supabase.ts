@@ -163,11 +163,16 @@ export type BerandaSettings = {
     title: string;
     subtitle: string;
     cta_primary_text: string;
+    cta_primary_url?: string;
     cta_secondary_text: string;
+    cta_secondary_url?: string;
+    kurikulum_file_url?: string;
+    slides?: Array<{ id: string; image_url: string; order: number }>;
     ebrosur: {
       card_title: string;
       card_description: string;
       button_text: string;
+      file_url?: string;
     };
   };
   features: {
@@ -190,6 +195,11 @@ export type BerandaSettings = {
       value: string;
       label: string;
     }>;
+    mitra?: Array<{
+      id: string;
+      nama: string;
+      logo_url: string;
+    }>;
   };
   testimonials: {
     section_title: string;
@@ -206,4 +216,42 @@ export type BerandaSettings = {
     default_message: string;
     phone_number: string;
   };
+};
+
+// Portfolio Types (FASE 2 - Dynamic CMS)
+export type PortfolioItem = {
+  id: string;
+  title: string;
+  student_name: string;
+  program: string;
+  category: string;
+  year: number;
+  description: string | null;
+  image_url: string | null;
+  project_url: string | null;
+  is_featured: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
+export type PortfolioItemFormData = {
+  title: string;
+  student_name: string;
+  program: string;
+  category: string;
+  year: number;
+  description?: string;
+  image_url?: string;
+  project_url?: string;
+  is_featured?: boolean;
+};
+
+export type PortfolioPageSettings = {
+  page_title: string;
+  page_subtitle: string;
+  show_filter: boolean;
+  show_search: boolean;
+  categories: string[];
+  display_style: 'grid' | 'masonry' | 'list';
+  items_per_page: number;
 };

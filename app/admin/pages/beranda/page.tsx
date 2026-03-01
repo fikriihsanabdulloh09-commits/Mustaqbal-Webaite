@@ -31,11 +31,20 @@ const defaultSettings: BerandaSettings = {
         title: 'Langkah Awal Menuju Masa Depan Hebat',
         subtitle: 'Bangun karir impianmu bersama SMK Mustaqbal. Kurikulum berbasis industri, fasilitas modern, dan jaminan penyaluran kerja ke perusahaan ternama.',
         cta_primary_text: 'Daftar Sekarang',
+        cta_primary_url: '/ppdb',
         cta_secondary_text: 'Unduh Kurikulum',
+        cta_secondary_url: '#ebrosur',
+        kurikulum_file_url: '', // URL File PDF Kurikulum
+        slides: [
+            { id: '1', image_url: 'https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg?auto=compress&cs=tinysrgb&w=1920', order: 1 },
+            { id: '2', image_url: 'https://images.pexels.com/photos/5212653/pexels-photo-5212653.jpeg?auto=compress&cs=tinysrgb&w=1920', order: 2 },
+            { id: '3', image_url: 'https://images.pexels.com/photos/8500373/pexels-photo-8500373.jpeg?auto=compress&cs=tinysrgb&w=1920', order: 3 },
+        ],
         ebrosur: {
             card_title: 'Download E-Brosur',
             card_description: 'Isi data diri Anda untuk mendapatkan informasi lengkap mengenai biaya dan kurikulum.',
-            button_text: 'Kirim & Download PDF'
+            button_text: 'Kirim & Download PDF',
+            file_url: '', // URL File PDF E-Brosur
         }
     },
     features: {
@@ -70,6 +79,13 @@ const defaultSettings: BerandaSettings = {
             { value: '50+', label: 'Mitra Industri' },
             { value: '90%', label: 'Siswa Tersampaikan' },
             { value: '1000+', label: 'Alumni Bekerja' }
+        ],
+        mitra: [
+            { id: '1', nama: 'Google Indonesia', logo_url: 'https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg' },
+            { id: '2', nama: 'Microsoft', logo_url: 'https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg' },
+            { id: '3', nama: 'Amazon Web Services', logo_url: 'https://upload.wikimedia.org/wikipedia/commons/9/93/Amazon_Web_Services_Logo.svg' },
+            { id: '4', nama: 'Tokopedia', logo_url: 'https://upload.wikimedia.org/wikipedia/commons/9/9f/Tokopedia.svg' },
+            { id: '5', nama: 'Gojek', logo_url: 'https://upload.wikimedia.org/wikipedia/commons/1/19/Gojek_logo_2019.svg' },
         ]
     },
     testimonials: {
@@ -163,10 +179,48 @@ export default function BerandaSettingsPage() {
     }
 
     // Update handlers
-    const updateHero = (field: string, value: string) => {
+    const updateHero = (field: string, value: any) => {
         setSettings(prev => ({
             ...prev,
             hero: { ...prev.hero, [field]: value }
+        }));
+    };
+
+    // Hero Slider handlers
+    const addHeroSlide = () => {
+        const newSlide = {
+            id: Date.now().toString(),
+            image_url: '',
+            order: (settings.hero.slides?.length || 0) + 1
+        };
+        setSettings(prev => ({
+            ...prev,
+            hero: {
+                ...prev.hero,
+                slides: [...(prev.hero.slides || []), newSlide]
+            }
+        }));
+    };
+
+    const updateHeroSlide = (slideId: string, field: string, value: string) => {
+        setSettings(prev => ({
+            ...prev,
+            hero: {
+                ...prev.hero,
+                slides: prev.hero.slides?.map(slide =>
+                    slide.id === slideId ? { ...slide, [field]: value } : slide
+                ) || []
+            }
+        }));
+    };
+
+    const removeHeroSlide = (slideId: string) => {
+        setSettings(prev => ({
+            ...prev,
+            hero: {
+                ...prev.hero,
+                slides: prev.hero.slides?.filter(slide => slide.id !== slideId) || []
+            }
         }));
     };
 
@@ -221,6 +275,38 @@ export default function BerandaSettingsPage() {
                 partners: { ...prev.partners, statistics: newStats }
             };
         });
+    };
+
+    // Helper functions untuk Mitra Industri
+    const addMitra = () => {
+        setSettings(prev => ({
+            ...prev,
+            partners: {
+                ...prev.partners,
+                mitra: [...(prev.partners.mitra || []), { id: Date.now().toString(), nama: '', logo_url: '' }]
+            }
+        }));
+    };
+
+    const updateMitra = (index: number, field: string, value: string) => {
+        setSettings(prev => {
+            const newMitra = [...(prev.partners.mitra || [])];
+            newMitra[index] = { ...newMitra[index], [field]: value };
+            return {
+                ...prev,
+                partners: { ...prev.partners, mitra: newMitra }
+            };
+        });
+    };
+
+    const removeMitra = (index: number) => {
+        setSettings(prev => ({
+            ...prev,
+            partners: {
+                ...prev.partners,
+                mitra: (prev.partners.mitra || []).filter((_, i) => i !== index)
+            }
+        }));
     };
 
     const updateTestimonials = (field: string, value: string) => {
@@ -305,6 +391,79 @@ export default function BerandaSettingsPage() {
                             <CardDescription>Kelola konten utama di bagian atas halaman</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-6">
+                            {/* Hero Slider Manager */}
+                            <div className="space-y-4">
+                                <div className="flex items-center justify-between">
+                                    <Label className="text-lg font-semibold">Hero Slider Manager</Label>
+                                    <Button variant="outline" size="sm" onClick={addHeroSlide}>
+                                        <Plus className="w-4 h-4 mr-1" /> Tambah Slide
+                                    </Button>
+                                </div>
+                                <p className="text-sm text-gray-500">Kelola gambar untuk slider hero (minimal 1 gambar)</p>
+
+                                <div className="space-y-4">
+                                    {settings.hero.slides?.map((slide, index) => (
+                                        <div key={slide.id} className="border rounded-lg p-4 bg-slate-50">
+                                            <div className="flex items-center gap-3 mb-3">
+                                                <span className="text-sm font-medium text-gray-500">Slide {index + 1}</span>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    className="text-red-500 ml-auto"
+                                                    onClick={() => removeHeroSlide(slide.id)}
+                                                >
+                                                    <Trash2 className="w-4 h-4" />
+                                                </Button>
+                                            </div>
+
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                {/* Image Preview */}
+                                                <div className="border-2 border-dashed border-gray-200 rounded-lg p-4 hover:border-teal-400 transition-colors bg-white">
+                                                    {slide.image_url ? (
+                                                        <div className="relative h-32 w-full rounded-lg overflow-hidden">
+                                                            <img
+                                                                src={slide.image_url}
+                                                                alt={`Slide ${index + 1}`}
+                                                                className="w-full h-full object-cover"
+                                                            />
+                                                            <button
+                                                                onClick={() => updateHeroSlide(slide.id, 'image_url', '')}
+                                                                className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600 text-xs w-6 h-6 flex items-center justify-center"
+                                                            >
+                                                                ×
+                                                            </button>
+                                                        </div>
+                                                    ) : (
+                                                        <div className="text-center py-8">
+                                                            <div className="w-10 h-10 mx-auto mb-2 bg-gray-100 rounded-lg flex items-center justify-center">
+                                                                <span className="text-xl">🖼️</span>
+                                                            </div>
+                                                            <p className="text-xs text-gray-500">Upload gambar slide</p>
+                                                        </div>
+                                                    )}
+                                                </div>
+
+                                                {/* URL Input */}
+                                                <div className="flex flex-col justify-center space-y-2">
+                                                    <Label className="text-sm">URL Gambar Slide</Label>
+                                                    <Input
+                                                        placeholder="https://example.com/image.jpg"
+                                                        value={slide.image_url}
+                                                        onChange={(e) => updateHeroSlide(slide.id, 'image_url', e.target.value)}
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+
+                                    {(!settings.hero.slides || settings.hero.slides.length === 0) && (
+                                        <div className="text-center py-8 border-2 border-dashed border-gray-200 rounded-lg">
+                                            <p className="text-gray-500">Belum ada slide. Klik "Tambah Slide" untuk memulai.</p>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="space-y-2">
                                     <Label htmlFor="welcome_text">Teks Welcome</Label>
@@ -315,13 +474,24 @@ export default function BerandaSettingsPage() {
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label htmlFor="cta_primary">Tombol Utama</Label>
+                                    <Label htmlFor="cta_primary">Tombol Utama (Teks)</Label>
                                     <Input
                                         id="cta_primary"
                                         value={settings.hero.cta_primary_text}
                                         onChange={(e) => updateHero('cta_primary_text', e.target.value)}
                                     />
                                 </div>
+                            </div>
+
+                            {/* CTA Primary URL */}
+                            <div className="space-y-2">
+                                <Label htmlFor="cta_primary_url">URL Tombol Utama</Label>
+                                <Input
+                                    id="cta_primary_url"
+                                    placeholder="/ppdb atau https://..."
+                                    value={settings.hero.cta_primary_url || ''}
+                                    onChange={(e) => updateHero('cta_primary_url', e.target.value)}
+                                />
                             </div>
 
                             <div className="space-y-2">
@@ -343,13 +513,25 @@ export default function BerandaSettingsPage() {
                                 />
                             </div>
 
-                            <div className="space-y-2">
-                                <Label htmlFor="cta_secondary">Tombol Sekunder</Label>
-                                <Input
-                                    id="cta_secondary"
-                                    value={settings.hero.cta_secondary_text}
-                                    onChange={(e) => updateHero('cta_secondary_text', e.target.value)}
-                                />
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="space-y-2">
+                                    <Label htmlFor="cta_secondary">Tombol Sekunder (Teks)</Label>
+                                    <Input
+                                        id="cta_secondary"
+                                        value={settings.hero.cta_secondary_text}
+                                        onChange={(e) => updateHero('cta_secondary_text', e.target.value)}
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="cta_secondary_url">URL / Link File Kurikulum (PDF)</Label>
+                                    <Input
+                                        id="cta_secondary_url"
+                                        placeholder="https://.../kurikulum.pdf"
+                                        value={settings.hero.cta_secondary_url || ''}
+                                        onChange={(e) => updateHero('cta_secondary_url', e.target.value)}
+                                    />
+                                    <p className="text-xs text-gray-500">Link file PDF kurikulum yang akan diunduh</p>
+                                </div>
                             </div>
 
                             <div className="border-t pt-6">
@@ -380,6 +562,16 @@ export default function BerandaSettingsPage() {
                                         onChange={(e) => updateEbrosur('card_description', e.target.value)}
                                         rows={3}
                                     />
+                                </div>
+                                <div className="space-y-2 mt-4">
+                                    <Label htmlFor="ebrosur_file">URL File E-Brosur (PDF)</Label>
+                                    <Input
+                                        id="ebrosur_file"
+                                        placeholder="https://.../ebrosur-smk-mustaqbal.pdf"
+                                        value={settings.hero.ebrosur?.file_url || ''}
+                                        onChange={(e) => updateEbrosur('file_url', e.target.value)}
+                                    />
+                                    <p className="text-xs text-gray-500">File PDF yang akan otomatis ter-download setelah user mengisi form</p>
                                 </div>
                             </div>
 
@@ -552,6 +744,77 @@ export default function BerandaSettingsPage() {
                                         </div>
                                     </div>
                                 ))}
+                            </div>
+
+                            {/* Section: Mitra Industri (Logo Slider) */}
+                            <div className="border-t pt-6">
+                                <div className="flex items-center justify-between mb-4">
+                                    <div>
+                                        <h3 className="font-semibold">Logo Mitra Industri</h3>
+                                        <p className="text-sm text-gray-500">Daftar logo perusahaan mitra untuk tampilan slider infinite scroll</p>
+                                    </div>
+                                </div>
+
+                                {(settings.partners.mitra || []).map((mitra, index) => (
+                                    <div key={mitra.id} className="bg-gray-50 p-4 rounded-lg mb-4">
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div className="space-y-2">
+                                                <Label>Nama Perusahaan</Label>
+                                                <Input
+                                                    value={mitra.nama}
+                                                    onChange={(e) => updateMitra(index, 'nama', e.target.value)}
+                                                    placeholder="Contoh: Google Indonesia"
+                                                />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <Label>Logo URL</Label>
+                                                <Input
+                                                    value={mitra.logo_url}
+                                                    onChange={(e) => updateMitra(index, 'logo_url', e.target.value)}
+                                                    placeholder="https://example.com/logo.png"
+                                                />
+                                            </div>
+                                        </div>
+                                        {mitra.logo_url && (
+                                            <div className="mt-3 flex items-center gap-4">
+                                                <div className="w-32 h-16 bg-white border rounded flex items-center justify-center p-2">
+                                                    <img
+                                                        src={mitra.logo_url}
+                                                        alt={mitra.nama}
+                                                        className="max-w-full max-h-full object-contain"
+                                                        onError={(e) => {
+                                                            (e.target as HTMLImageElement).src = 'https://via.placeholder.com/100x60?text=Error';
+                                                        }}
+                                                    />
+                                                </div>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    onClick={() => removeMitra(index)}
+                                                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                                >
+                                                    <Trash2 className="w-4 h-4 mr-1" />
+                                                    Hapus
+                                                </Button>
+                                            </div>
+                                        )}
+                                    </div>
+                                ))}
+
+                                {(settings.partners.mitra || []).length === 0 && (
+                                    <div className="text-center py-6 border-2 border-dashed rounded-lg">
+                                        <p className="text-gray-500">Belum ada mitra ditambahkan</p>
+                                    </div>
+                                )}
+
+                                <Button
+                                    variant="outline"
+                                    onClick={addMitra}
+                                    className="w-full mt-2"
+                                >
+                                    <Plus className="w-4 h-4 mr-2" />
+                                    Tambah Mitra
+                                </Button>
                             </div>
 
                             <Button onClick={() => saveTab('Mitra')} disabled={savingTab === 'Mitra'} className="bg-teal-600 hover:bg-teal-700">

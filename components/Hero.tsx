@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ArrowRight, Download, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -11,7 +13,7 @@ import { toast } from 'sonner';
 import { createClient } from '@/lib/supabase';
 
 interface HeroSettings {
-  slides: Array<{ id: number; image_url: string; order: number }>;
+  slides: Array<{ id: string; image_url: string; order: number }>;
   slider_duration: number;
   overlay_color: string;
   overlay_opacity: number;
@@ -19,11 +21,40 @@ interface HeroSettings {
   auto_play: boolean;
 }
 
-const defaultHeroImages = [
-  'https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg?auto=compress&cs=tinysrgb&w=1920',
-  'https://images.pexels.com/photos/5212653/pexels-photo-5212653.jpeg?auto=compress&cs=tinysrgb&w=1920',
-  'https://images.pexels.com/photos/8500373/pexels-photo-8500373.jpeg?auto=compress&cs=tinysrgb&w=1920',
-];
+// DUMMY DATA - Hero Settings (dari CMS)
+const heroData = {
+  welcome_text: 'Penerimaan Siswa Baru Telah Dibuka',
+  title: 'Langkah Awal Menuju Masa Depan Hebat',
+  subtitle: 'Bangun karir impianmu bersama SMK Mustaqbal. Kurikulum berbasis industri, fasilitas modern, dan jaminan penyaluran kerja ke perusahaan ternama.',
+  cta_primary_text: 'Daftar Sekarang',
+  cta_primary_url: '/ppdb',
+  cta_secondary_text: 'Unduh Kurikulum',
+  cta_secondary_url: '#ebrosur',
+  kurikulum_file_url: '', // File PDF Kurikulum
+  slides: [
+    { id: '1', image_url: 'https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg?auto=compress&cs=tinysrgb&w=1920', order: 1 },
+    { id: '2', image_url: 'https://images.pexels.com/photos/5212653/pexels-photo-5212653.jpeg?auto=compress&cs=tinysrgb&w=1920', order: 2 },
+    { id: '3', image_url: 'https://images.pexels.com/photos/8500373/pexels-photo-8500373.jpeg?auto=compress&cs=tinysrgb&w=1920', order: 3 },
+  ],
+  ebrosur: {
+    card_title: 'Download E-Brosur',
+    card_description: 'Isi data diri Anda untuk mendapatkan informasi lengkap mengenai biaya dan kurikulum.',
+    button_text: 'Kirim & Download PDF',
+    file_url: '', // File PDF E-Brosur
+  }
+};
+
+// Helper untuk mendapatkan array gambar dari slides
+const getHeroImages = (slides?: typeof heroData.slides) => {
+  if (slides && slides.length > 0) {
+    return slides.sort((a, b) => a.order - b.order).map(s => s.image_url);
+  }
+  return [
+    'https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg?auto=compress&cs=tinysrgb&w=1920',
+    'https://images.pexels.com/photos/5212653/pexels-photo-5212653.jpeg?auto=compress&cs=tinysrgb&w=1920',
+    'https://images.pexels.com/photos/8500373/pexels-photo-8500373.jpeg?auto=compress&cs=tinysrgb&w=1920',
+  ];
+};
 
 interface HeroProps {
   settings?: {
@@ -31,7 +62,9 @@ interface HeroProps {
     title?: string;
     subtitle?: string;
     cta_primary_text?: string;
+    cta_primary_url?: string;
     cta_secondary_text?: string;
+    cta_secondary_url?: string;
     ebrosur?: {
       card_title?: string;
       card_description?: string;
@@ -49,7 +82,7 @@ export default function Hero({ settings }: HeroProps) {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [heroSettings, setHeroSettings] = useState<HeroSettings | null>(null);
-  const [heroImages, setHeroImages] = useState<string[]>(defaultHeroImages);
+  const [heroImages, setHeroImages] = useState<string[]>(getHeroImages(heroData.slides));
 
   useEffect(() => {
     fetchHeroSettings();
@@ -67,7 +100,7 @@ export default function Hero({ settings }: HeroProps) {
       if (data && data.value) {
         const settings = data.value as HeroSettings;
         setHeroSettings(settings);
-        setHeroImages(settings.slides.map(s => s.image_url));
+        setHeroImages(getHeroImages(settings.slides));
       }
     } catch (error) {
       console.error('Error fetching hero settings:', error);
@@ -126,10 +159,8 @@ export default function Hero({ settings }: HeroProps) {
             }}
             className="absolute inset-0"
           >
-            <motion.img
-              src={image}
-              alt={`Slide ${index + 1}`}
-              className="w-full h-full object-cover"
+            <motion.div
+              className="w-full h-full"
               initial={{ scale: 1 }}
               animate={{
                 scale: currentSlide === index ? 1.05 : 1
@@ -138,7 +169,17 @@ export default function Hero({ settings }: HeroProps) {
                 duration: 5,
                 ease: "linear"
               }}
-            />
+            >
+              <Image
+                src={image}
+                alt={`Slide ${index + 1}`}
+                fill
+                className="object-cover"
+                priority={index === 0}
+                sizes="100vw"
+                quality={85}
+              />
+            </motion.div>
           </motion.div>
         ))}
         <div
@@ -157,8 +198,8 @@ export default function Hero({ settings }: HeroProps) {
                 key={index}
                 onClick={() => setCurrentSlide(index)}
                 className={`w-2 h-2 rounded-full transition-all duration-300 ${currentSlide === index
-                    ? 'bg-white w-8'
-                    : 'bg-white/50 hover:bg-white/75'
+                  ? 'bg-white w-8'
+                  : 'bg-white/50 hover:bg-white/75'
                   }`}
                 aria-label={`Go to slide ${index + 1}`}
               />
@@ -180,12 +221,12 @@ export default function Hero({ settings }: HeroProps) {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
               </span>
-              {settings?.welcome_text || 'Penerimaan Siswa Baru Telah Dibuka'}
+              {settings?.welcome_text || heroData.welcome_text}
             </div>
 
             <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
               {(() => {
-                const title = settings?.title || 'Langkah Awal Menuju Masa Depan Hebat';
+                const title = settings?.title || heroData.title;
                 const words = title.split(' ');
                 const mid = Math.ceil(words.length / 2);
                 return (<>{words.slice(0, mid).join(' ')}{' '}<span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-200 to-white">{words.slice(mid).join(' ')}</span></>);
@@ -193,23 +234,27 @@ export default function Hero({ settings }: HeroProps) {
             </h1>
 
             <p className="text-lg text-slate-100 max-w-2xl mx-auto lg:mx-0 leading-relaxed opacity-90">
-              {settings?.subtitle || 'Bangun karir impianmu bersama SMK Mustaqbal. Kurikulum berbasis industri, fasilitas modern, dan jaminan penyaluran kerja ke perusahaan ternama.'}
+              {settings?.subtitle || heroData.subtitle}
             </p>
 
             <div className="flex flex-wrap justify-center lg:justify-start gap-4">
-              <Button
-                size="lg"
-                className="px-8 py-6 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl transition-all shadow-lg shadow-amber-500/30 hover:-translate-y-1"
-              >
-                {settings?.cta_primary_text || 'Daftar Sekarang'} <ArrowRight className="ml-2 w-5 h-5" />
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="px-8 py-6 bg-white/10 hover:bg-white/20 backdrop-blur-md border-2 border-white/30 text-white font-bold rounded-xl transition-all"
-              >
-                <Download className="mr-2 w-5 h-5" /> {settings?.cta_secondary_text || 'Unduh Kurikulum'}
-              </Button>
+              <Link href={settings?.cta_primary_url || heroData.cta_primary_url}>
+                <Button
+                  size="lg"
+                  className="px-8 py-6 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl transition-all shadow-lg shadow-amber-500/30 hover:-translate-y-1"
+                >
+                  {settings?.cta_primary_text || heroData.cta_primary_text} <ArrowRight className="ml-2 w-5 h-5" />
+                </Button>
+              </Link>
+              <Link href={settings?.cta_secondary_url || heroData.cta_secondary_url}>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="px-8 py-6 bg-white/10 hover:bg-white/20 backdrop-blur-md border-2 border-white/30 text-white font-bold rounded-xl transition-all"
+                >
+                  <Download className="mr-2 w-5 h-5" /> {settings?.cta_secondary_text || heroData.cta_secondary_text}
+                </Button>
+              </Link>
             </div>
 
             <div className="pt-4 flex items-center justify-center lg:justify-start gap-6 text-sm font-medium text-teal-100">
@@ -233,9 +278,9 @@ export default function Hero({ settings }: HeroProps) {
             <div className="bg-white rounded-2xl shadow-2xl shadow-black/20 p-6 md:p-8 relative overflow-hidden">
               <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-teal-500 to-amber-500"></div>
 
-              <h3 className="text-2xl font-heading font-bold text-slate-800 mb-2">{settings?.ebrosur?.card_title || 'Download E-Brosur'}</h3>
+              <h3 className="text-2xl font-heading font-bold text-slate-800 mb-2">{settings?.ebrosur?.card_title || heroData.ebrosur.card_title}</h3>
               <p className="text-slate-500 text-sm mb-6">
-                {settings?.ebrosur?.card_description || 'Isi data diri Anda untuk mendapatkan informasi lengkap mengenai biaya dan kurikulum.'}
+                {settings?.ebrosur?.card_description || heroData.ebrosur.card_description}
               </p>
 
               <form onSubmit={handleSubmit} className="space-y-4">

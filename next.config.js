@@ -4,7 +4,15 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   images: {
-    domains: ['images.unsplash.com', 'i.pravatar.cc', 'via.placeholder.com', 'upload.wikimedia.org'],
+    domains: [
+      'images.unsplash.com',
+      'i.pravatar.cc',
+      'via.placeholder.com',
+      'upload.wikimedia.org',
+      'images.pexels.com',
+      'kxozyztqrofpfdyglnja.supabase.co',
+      'res.cloudinary.com',
+    ],
   },
   experimental: {
     serverActions: true,

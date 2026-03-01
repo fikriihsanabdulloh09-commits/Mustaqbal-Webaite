@@ -1,37 +1,22 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Quote } from 'lucide-react';
-import { supabase, type Testimonial } from '@/lib/supabase';
+import { Testimonial } from '@/lib/supabase';
 
-export default function TestimonialsSection({ settings }: { settings?: { section_title?: string; section_subtitle?: string } }) {
-  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
-  const [loading, setLoading] = useState(true);
+interface TestimonialsSectionProps {
+  settings?: {
+    section_title?: string;
+    section_subtitle?: string;
+  };
+  testimonials: Testimonial[];
+}
 
-  useEffect(() => {
-    async function fetchTestimonials() {
-      try {
-        const { data, error } = await supabase
-          .from('testimonials')
-          .select('*')
-          .eq('is_featured', true)
-          .order('created_at', { ascending: false })
-          .limit(3);
-
-        if (error) throw error;
-        setTestimonials(data || []);
-      } catch (error) {
-        console.error('Error fetching testimonials:', error);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchTestimonials();
-  }, []);
-
-  if (loading) return null;
+export default function TestimonialsSection({ settings, testimonials }: TestimonialsSectionProps) {
+  if (!testimonials || testimonials.length === 0) {
+    return null;
+  }
 
   return (
     <section className="py-24 bg-teal-900 relative overflow-hidden">
@@ -65,14 +50,16 @@ export default function TestimonialsSection({ settings }: { settings?: { section
             >
               <Quote className="absolute top-6 right-6 text-teal-500/30 w-10 h-10" />
               <p className="text-slate-200 italic leading-relaxed mb-8 relative z-10">
-                "{testimonial.testimonial_text}"
+                &ldquo;{testimonial.testimonial_text}&rdquo;
               </p>
               <div className="flex items-center gap-4">
                 {testimonial.avatar_url ? (
-                  <img
+                  <Image
                     src={testimonial.avatar_url}
                     alt={testimonial.name}
-                    className="w-12 h-12 rounded-full border-2 border-teal-500"
+                    width={48}
+                    height={48}
+                    className="w-12 h-12 rounded-full border-2 border-teal-500 object-cover"
                   />
                 ) : (
                   <div className="w-12 h-12 rounded-full border-2 border-teal-500 bg-teal-600 flex items-center justify-center text-white font-bold">

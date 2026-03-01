@@ -1,11 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import { ArrowRight, Cpu, Palette, Monitor, Code, GraduationCap } from 'lucide-react';
 import * as LucideIcons from 'lucide-react';
 import Link from 'next/link';
-import { supabase, type Program } from '@/lib/supabase';
+import { Program } from '@/lib/supabase';
 import { Button } from '@/components/ui/button';
 
 // Legacy icon map for backwards compatibility
@@ -37,36 +37,20 @@ const colorMap: Record<string, { from: string; to: string; bg: string }> = {
   purple: { from: 'from-purple-500', to: 'to-indigo-500', bg: 'bg-purple-500' },
 };
 
-export default function ProgramsSection({ settings }: { settings?: { section_title?: string; section_subtitle?: string } }) {
-  const [programs, setPrograms] = useState<Program[]>([]);
-  const [loading, setLoading] = useState(true);
+interface ProgramsSectionProps {
+  settings?: {
+    section_title?: string;
+    section_subtitle?: string;
+  };
+  programs: Program[];
+}
 
-  useEffect(() => {
-    async function fetchPrograms() {
-      try {
-        const { data, error } = await supabase
-          .from('programs')
-          .select('*')
-          .eq('is_active', true)
-          .order('order_position');
-
-        if (error) throw error;
-        setPrograms(data || []);
-      } catch (error) {
-        console.error('Error fetching programs:', error);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchPrograms();
-  }, []);
-
-  if (loading) {
+export default function ProgramsSection({ settings, programs }: ProgramsSectionProps) {
+  if (!programs || programs.length === 0) {
     return (
       <section className="py-24 bg-slate-50">
         <div className="container mx-auto px-4">
-          <div className="text-center">Loading...</div>
+          <div className="text-center">Tidak ada program keahlian tersedia.</div>
         </div>
       </section>
     );
@@ -122,10 +106,12 @@ export default function ProgramsSection({ settings }: { settings?: { section_tit
                     className={`absolute inset-0 bg-gradient-to-b ${colors.from} ${colors.to} opacity-0 group-hover:opacity-20 transition-opacity z-10`}
                   ></div>
                   {program.image_url ? (
-                    <img
+                    <Image
                       src={program.image_url}
                       alt={program.title}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      fill
+                      className="object-cover transition-transform duration-700 group-hover:scale-110"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
                     />
                   ) : (
                     <div className={`w-full h-full bg-gradient-to-br ${colors.from} ${colors.to}`}></div>

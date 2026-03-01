@@ -1,7 +1,6 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import InfiniteLogoSlider from './InfiniteLogoSlider';
 
 interface PartnersSettings {
   section_title?: string;
@@ -33,8 +32,6 @@ export default function PartnersSection({ settings }: { settings?: PartnersSetti
             {settings?.section_subtitle || 'Lebih dari 50+ perusahaan bermitra dengan kami untuk program magang, rekrutmen, dan pengembangan kurikulum'}
           </p>
         </motion.div>
-
-        <InfiniteLogoSlider speed={30} pauseOnHover={true} className="mb-12" />
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}

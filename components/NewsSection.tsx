@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Calendar, User } from 'lucide-react';
 import Link from 'next/link';
-import { supabase, type NewsArticle } from '@/lib/supabase';
+import { NewsArticle } from '@/lib/supabase';
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
 
@@ -15,33 +15,18 @@ const categoryLabels: Record<string, string> = {
   artikel: 'Artikel',
 };
 
-export default function NewsSection({ settings }: { settings?: { section_title?: string; section_subtitle?: string } }) {
-  const [news, setNews] = useState<NewsArticle[]>([]);
-  const [loading, setLoading] = useState(true);
+interface NewsSectionProps {
+  settings?: {
+    section_title?: string;
+    section_subtitle?: string;
+  };
+  news: NewsArticle[];
+}
 
-  useEffect(() => {
-    async function fetchNews() {
-      try {
-        const { data, error } = await supabase
-          .from('news_articles')
-          .select('*')
-          .eq('is_published', true)
-          .order('published_at', { ascending: false })
-          .limit(3);
-
-        if (error) throw error;
-        setNews(data || []);
-      } catch (error) {
-        console.error('Error fetching news:', error);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchNews();
-  }, []);
-
-  if (loading) return null;
+export default function NewsSection({ settings, news }: NewsSectionProps) {
+  if (!news || news.length === 0) {
+    return null;
+  }
 
   return (
     <section className="py-24 bg-white">
@@ -71,10 +56,12 @@ export default function NewsSection({ settings }: { settings?: { section_title?:
               <Link href={`/berita/${article.slug}`}>
                 <div className="relative overflow-hidden rounded-2xl mb-5 aspect-video shadow-sm">
                   {article.image_url ? (
-                    <img
+                    <Image
                       src={article.image_url}
                       alt={article.title}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      fill
+                      className="object-cover transition-transform duration-500 group-hover:scale-110"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     />
                   ) : (
                     <div className="w-full h-full bg-gradient-to-br from-teal-400 to-teal-600"></div>
